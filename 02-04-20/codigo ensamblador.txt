@@ -1,0 +1,1345 @@
+//select campos estaticos
+	$check_sql = "SELECT
+		parrafo
+	FROM
+		parrafos_documentos2
+	WHERE
+		genero IS NULL AND 
+    	cantidad IS NULL AND 
+		abg_ben = 5";
+	sc_lookup(rs, $check_sql);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$campo3 = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$campo3 = '';
+	}
+//fin select campos estaticos
+
+//count
+	$check_sql1 = "SELECT
+		count(parrafo)
+	FROM
+		`parrafos_documentos2`
+	WHERE
+		genero IS NULL AND 
+    	cantidad IS NULL AND 
+		abg_ben = 5";
+	sc_lookup(rs, $check_sql1);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$count_campo3 = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$count_campo3 = '';
+	}
+//fin count
+
+//resultado select campos estaticos
+	sc_lookup(dataset, $check_sql);
+		for ($a = 0; $a < $count_campo3; $a++){
+			$campo3	= {dataset[$a][0]};
+		}
+//fin resultado select campos estaticos
+
+	$senores    	= {dataset[0][0]};
+	$asunto	    	= {dataset[5][0]};
+	$radicado   	= {dataset[6][0]};
+	$demandante 	= {dataset[7][0]};
+	$demandado  	= {dataset[8][0]};
+	$referencia 	= {dataset[9][0]};
+	$dia			= {dataset[10][0]};
+	$mes			= {dataset[11][0]};
+	$ano			= {dataset[12][0]};
+	$celebrado_ac 	= {dataset[13][0]};
+	$celebrado_ac1 	= {dataset[14][0]};
+	$identificada	= {dataset[15][0]};
+	$cuyo_actor		= {dataset[16][0]};
+	$reparacion_d	= {dataset[17][0]};
+	$atentamente	= {dataset[18][0]};
+	$csj			= {dataset[19][0]};
+	
+//firma1
+	$f1				= {dataset[1][0]};
+	$f2				= {dataset[2][0]};
+	$f3				= {dataset[3][0]};
+	$f4				= {dataset[4][0]};
+//fin firma1
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
+//juzgados
+	$check_sql2 = "SELECT
+			nombre
+		FROM
+			juzgados_tribunales
+		INNER JOIN juzgados_sentencia ON juzgados_sentencia.juzgados = juzgados_tribunales.codigo
+		WHERE juzgados_sentencia.codReg = '" . {cod} . "'";
+	sc_lookup(rs, $check_sql2);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$juzgado = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$juzgado = '';
+	}
+// fin juzgados
+
+// contador juzgados
+	$check_sql3 = "SELECT
+			COUNT(codigo)
+		FROM
+			juzgados_sentencia
+		WHERE codReg = '" . {cod} . "'";
+	sc_lookup(rs, $check_sql3);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$count_juz = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$count_juz = '';
+	}
+//fin contador juzgados
+
+//lista juzgados
+	sc_lookup(dataset, $check_sql2);
+		for ($j = 0; $j < $count_juz; $j++){
+			$juzgado = {dataset[$j][0]};
+		}
+
+	//nombre juzgados
+	$j  = 0;
+	$j1 = " ";
+
+	switch(true){
+		case ($juzgado != null):
+			do{
+				$j1 = $j1 . " " . {dataset[$j][0]};
+				$j++;
+			}while($j < $count_juz);
+		break;
+		case ($juzgado == 0):
+			$j1 = "<strong> No hay ningun juzgado asignado</strong>";
+			echo $j1 . "<br>";
+		break;
+	}
+
+//fin lista juzgados
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+//abogados
+	$check_sql4 = "SELECT
+		db_abogados.nombres,
+		db_abogados.apellidos,
+		db_abogados.cedula,
+		municipio.municipio,
+		db_abogados.tarjeta_p,
+		db_abogados.genero
+	FROM
+		db_abogados
+	INNER JOIN abogadosentencia ON abogadosentencia.abogado = db_abogados.codigo
+	INNER JOIN municipio ON db_abogados.ciudadExpedicion = municipio.codigo
+	WHERE
+		abogadosentencia.codReg = '" . {cod} . "'";
+	sc_lookup(rs, $check_sql4);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$nombre_abg		= {rs[0][0]};
+		$apellido_abg	= {rs[0][1]};
+		$cedula_abg		= {rs[0][2]};
+		$ciudadexp_abg  = {rs[0][3]};
+		$tarjeta_p		= {rs[0][4]};
+		$genero_abg		= {rs[0][5]};
+	}
+			else     // No row found
+	{
+		$nombre_abg		= '';
+		$apellido_abg	= '';
+		$cedula_abg		= '';
+		$ciudadexp_abg  = '';
+		$tarjeta_p		= '';
+		$genero_abg		= '';
+	}
+//fin abogado
+
+//contador abogados
+	$check_sql5 = "SELECT count(abogado)
+			FROM abogadosentencia
+			WHERE codReg = '" . {cod} . "'";
+	sc_lookup(rs, $check_sql5);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$count_abg = {rs[0][0]};
+	}
+			else     // No row found
+	{
+				$count_abg = '';
+	}
+//fin contador abogado
+
+// abogados masculino
+	$check_sql6 = "SELECT
+			COUNT(db_abogados.genero)
+		FROM
+			db_abogados
+		INNER JOIN abogadosentencia ON abogadosentencia.abogado = db_abogados.codigo
+		WHERE
+			db_abogados.genero = 1 AND 
+			abogadosentencia.codReg = '" . {cod} . "'";
+	sc_lookup(rs, $check_sql6);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$abogado_m = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$abogado_m = '';
+	}
+//fin abogado masculino
+
+// abogados femenino
+	$check_sql7 = "SELECT
+			COUNT(db_abogados.genero)
+		FROM
+			db_abogados
+		INNER JOIN abogadosentencia ON abogadosentencia.abogado = db_abogados.codigo
+		WHERE
+			db_abogados.genero = 2 AND 
+			abogadosentencia.codReg = '" . {cod} . "'";
+	sc_lookup(rs, $check_sql7);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$abogado_f = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$abogado_f = '';
+	}
+//fin abogado masculino
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+//lista de abogados
+	sc_lookup(dataset4, $check_sql4);
+		for ($a = 0; $a < $count_abg; $a++){
+			$nombre_abg		= {dataset4[$a][0]};
+			$apellido_abg 	= {dataset4[$a][1]};
+			$cedula_abg 	= {dataset4[$a][2]};
+			$ciudadexp_abg	= {dataset4[$a][3]};
+			$tarjeta_p		= {dataset4[$a][4]};
+			$genero_abg		= {dataset4[$a][5]};
+		}
+	
+	//campo de los nombres de abogados en el parrafo
+	$a = 0;
+	$a1 = "";
+	do{
+		$a1 = $a1 . " " . {dataset4[$a][0]} . " " . {dataset4[$a][1]} . ",";
+		$a++;
+	}while($a < $count_abg);
+
+	//cedulas abogados
+	$c = 0;
+	$c1 = "";
+	do{
+		$c1 = $c1 . " " . {dataset4[$c][2]} . ", ";
+		$c++;
+	}while($c < $count_abg);
+
+	//cedulas expedicion abogados
+	$cx = 0;
+	$cx1 = "";
+	do{
+		$cx1 = $cx1 . " " . {dataset4[$cx][3]} . ", ";
+		$cx++;
+	}while($cx < $count_abg);
+
+	//tarjetas profesionales abogados
+	$t = 0;
+	$t1 = "";
+	do{
+		$t1 = $t1 . " " . {dataset4[$t][4]} . ", ";
+		$t++;
+	}while($t < $count_abg);
+
+	//nombre, apellido y cedula de la firma del abogado 2
+	$g = 0;
+	$g2_1 = "";
+	do{
+		$g2_1 = $g2_1 . $f1 . {dataset4[$g][0]}. " " . {dataset4[$g][1]} . $f2 . 
+		{dataset4[$g][2]} . $f3 . {dataset4[$g][4]} . $f4;
+		$g++;
+	}while($g < $count_abg);
+	
+	$g = 0;
+	$g2_2 = "";
+	do{
+		$g2_2 = $g2_2 . $f1 . {dataset4[$g][0]}. " " . {dataset4[$g][1]} . $f2 . 
+		{dataset4[$g][2]} . $f3 . {dataset4[$g][4]} . " " . $csj . $f4 ;
+		$g++;
+	}while($g < $count_abg);
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+	switch(true){
+		//abogado
+		case ($count_abg == 1 && $genero_abg == 1):
+			$genero 	= 1;
+			$cantidad 	= 1;
+		break;
+		//abogada
+		case ($count_abg == 1 && $genero_abg == 2):
+			$genero 	= 2;
+			$cantidad 	= 1;
+		break;
+		//abogadas
+		case ($count_abg > 1 && $abogado_m <1 && $abogado_f != null):
+			$genero 	= 2;
+			$cantidad 	= 2;
+		break;
+		//abogados
+		case ($count_abg > 1 && $abogado_m != null && $abogado_f != null):
+			$genero 	= 1;
+			$cantidad 	= 2;
+		break;
+	}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+//select parrafo desarchivo
+	$check_sql8 = "SELECT
+		parrafo
+	FROM
+		parrafos_documentos2
+	WHERE
+		documento = 30 AND
+		abg_ben = 1 AND 
+		cantidad = '" . $cantidad . "' AND
+		genero = '" . $genero . "'";
+	sc_lookup(rs, $check_sql8);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$desarchivo = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$desarchivo = '';
+	}
+//fin select parrafos desarchivo
+
+//lista parrafos desarchivo
+	sc_lookup(dataset8, $check_sql8);
+		for ($d = 0; $d < 3; $d++){
+			$desarchivo	= {dataset8[$d][0]};
+		}
+//fin parrafos desarchivo
+
+//parraafos del documento de desarchivo
+	$desarchivo1 = {dataset8[0][0]};
+	$desarchivo2 = {dataset8[1][0]};
+	$desarchivo3 = {dataset8[2][0]};
+//fin parraafos del documento de desarchivo
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+//select campos dinamicos
+	$check_sql9 = "SELECT
+		parrafo
+	FROM
+		parrafos_documentos2
+	WHERE
+		abg_ben = 3 AND
+		cantidad = '" . $cantidad . "' AND
+		genero = '" . $genero . "'";
+	sc_lookup(rs, $check_sql9);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$campo3gc = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$campo3gc = '';
+	}
+//fin select campos dinamicos
+
+//count campos dinamicos
+	$check_sql10 = "SELECT
+		count(parrafo)
+	FROM
+		`parrafos_documentos2`
+	WHERE
+		abg_ben = 3 AND
+		cantidad = '" . $cantidad . "' AND
+		genero = '" . $genero . "'";
+	sc_lookup(rs, $check_sql10);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$count_campo3gc = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$count_campo3gc = '';
+	}
+//fin count campos dinamicos
+
+//resultado select campos dinamicos
+	sc_lookup(dataset9, $check_sql9);
+		for ($a = 0; $a < $count_campo3gc; $a++){
+			$campo3gc	= {dataset9[$a][0]};
+		}
+	$campo3gc1  = {dataset9[0][0]};
+	$campo3gc2  = {dataset9[1][0]};
+	$campo3gc3  = {dataset9[2][0]};
+	$manifiesto = {dataset9[3][0]};
+//fin resultado select campos dinamicos
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//beneficiarios
+	$check_sql11 = "SELECT
+		beneficiarios.nombre,
+		beneficiarios.apellido,
+		beneficiarios.documentoId,
+		municipio.municipio,
+		beneficiarios.mayor_menor,
+		beneficiarios.genero
+	FROM
+		beneficiarios
+	INNER JOIN municipio ON beneficiarios.ciudadExp = municipio.codigo
+	WHERE
+		beneficiarios.mayor_menor IN(1,2,3) AND 
+		beneficiarios.codReg = '" . {cod} . "'";
+	sc_lookup(rs, $check_sql11);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$nombre		= {rs[0][0]};
+		$apellido	= {rs[0][1]};
+		$cedula_ben	= {rs[0][2]};
+		$ciuexp_ben = {rs[0][3]};
+		$mayor_m    = {rs[0][4]};
+		$genero_ben = {rs[0][5]};
+	}
+			else     // No row found
+	{
+		$nombre		= '';
+		$apellido	= '';
+		$cedula_ben = '';
+		$ciuexp_ben = '';
+		$mayor_m    = '';
+		$genero_ben = '';
+	}
+//fin beneficiario
+
+//contador beneficiarios
+	$check_sql12 = "SELECT count(codigo)
+			FROM beneficiarios
+			WHERE codReg = '" . {cod} . "'";
+	sc_lookup(rs, $check_sql12);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$count_ben = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$count_ben = '';
+	}
+//fin contador beneficiario
+
+// beneficiarios masculino
+	$check_sql13 = "SELECT
+		count(codigo)
+	FROM
+		beneficiarios
+	WHERE
+		genero = 1 AND
+		codReg = '" . {cod} . "'";
+	sc_lookup(rs, $check_sql13);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$beneficiario_m = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$beneficiario_m = '';
+	}
+// fin beneficiarios masculino
+
+// beneficiarios femenino
+	$check_sql14 = "SELECT
+		count(codigo)
+	FROM
+		beneficiarios
+	WHERE
+		genero = 2 AND
+		codReg = '" . {cod} . "'";
+	sc_lookup(rs, $check_sql14);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$beneficiario_f = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$beneficiario_f = '';
+	}
+// fin beneficiarios femenino
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	switch(true){
+		//beneficiario
+		case ($count_ben == 1 && $genero_ben == 1):
+			$genero2 	= 1;
+			$cantidad2 	= 1;
+		break;
+		//abogada
+		case ($count_ben == 1 && $genero_ben == 2):
+			$genero2 	= 2;
+			$cantidad2 	= 1;
+		break;
+		//abogadas
+		case ($count_ben > 1 && $beneficiario_m <1 && $beneficiario_f != null):
+			$genero2 	= 2;
+			$cantidad2 	= 2;
+		break;
+		//abogados
+		case ($count_ben > 1 && $beneficiario_m != null && $beneficiario_f != null):
+			$genero2 	= 1;
+			$cantidad2 	= 2;
+		break;
+	}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//lista de beneficiarios
+	sc_lookup(dataset11, $check_sql11);
+		for ($b = 0; $b < $count_ben; $b++){			
+			$nombre_ben		= {dataset11[$b][0]} ." ";
+			$apellido_ben 	= {dataset11[$b][1]} .",";
+			$cedula_ben 	= {dataset11[$b][2]} .",";
+			$ciuexp_ben		= {dataset11[$b][3]} .",";
+			$mayor_m    	= {dataset11[$b][4]};
+			$genero_ben     = {dataset11[$b][5]};
+		}
+	
+	$b  = 0;
+	$b1 = " ";
+	$d  = 0;
+	$b2 = " ";
+
+	switch(true){
+		case ($nombre != null):
+			//nombres y apellidos de los beneficiarios en el parrafo
+			do{
+				$b1 = $b1 . " " . {dataset11[$b][0]} . " " . {dataset11[$b][1]} . ",";
+				$b++;
+			}while($b < $count_ben);
+		break;
+	}
+
+//fin lista beneficiarios
+
+//////////////////////////////////////////////////////
+
+//select parrafo revisar beneficiario
+	$check_sql15 = "SELECT
+		parrafo
+	FROM
+		parrafos_documentos2
+	WHERE
+		documento = 20 AND
+		abg_ben = 2 AND 
+		cantidad = '" . $cantidad2 . "' AND
+		genero = '" . $genero2 . "'";
+	sc_lookup(rs, $check_sql15);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$revisar_ben = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$revisar_ben = '';
+	}
+//fin select parrafo revisar beneficiario
+
+//lista parrafos revisar beneficiario
+	sc_lookup(dataset15, $check_sql15);
+		for ($d = 0; $d < 1; $d++){
+			$revisar_ben	= {dataset15[$d][0]};
+		}
+	$revisar1 = {dataset15[0][0]};
+//fin parrafos revisar beneficiario
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+//select campos estaticos 4
+	$check_sql16 = "SELECT
+		parrafo
+	FROM
+		parrafos_documentos2
+	WHERE
+		abg_ben = 4 AND
+		cantidad = '" . $cantidad2 . "' AND
+		genero = '" . $genero2 . "'";
+	sc_lookup(rs, $check_sql16);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$campo4 = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$campo4 = '';
+	}
+//fin select campos estaticos 4
+
+//count select campos estaticos 4
+	$check_sql17 = "SELECT
+		count(parrafo)
+	FROM
+		`parrafos_documentos2`
+	WHERE
+		abg_ben = 4 AND
+		cantidad = '" . $cantidad2 . "' AND
+		genero = '" . $genero2 . "'";
+	sc_lookup(rs, $check_sql17);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$count_campo4 = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$count_campo4 = '';
+	}
+//fin count select campos estaticos 4
+
+//resultado select campos estaticos 4
+	sc_lookup(dataset16, $check_sql16);
+		for ($a = 0; $a < $count_campo4; $a++){
+			$campo4	= {dataset16[$a][0]};
+		}
+//fin resultado select campos estaticos 4
+
+	$pysh1 = {dataset16[0][0]};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+//select campos estaticos 2 paz y salvo honorarios
+	$check_sql18 = "SELECT
+		parrafo
+	FROM
+		parrafos_documentos2
+	WHERE
+		documento = 25 AND
+		abg_ben = 2 AND
+		cantidad = '" . $cantidad2 . "' AND
+		genero = '" . $genero2 . "'";
+	sc_lookup(rs, $check_sql18);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$pyshb = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$pyshb = '';
+	}
+//fin select campos estaticos 2 paz y salvo honorarios
+
+//resultado select campos estaticos 2 paz y salvo honorarios
+	sc_lookup(dataset18, $check_sql18);
+		for ($a = 0; $a < 1; $a++){
+			$pyshb	= {dataset18[$a][0]};
+		}
+//fin resultado select campos estaticos 2 paz y salvo honorarios
+	
+	$pyshb1 = {dataset18[0][0]};
+	$pyshb2 = {dataset18[1][0]};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+//select campos estaticos 1 paz y salvo honorarios
+	$check_sql19 = "SELECT
+		parrafo
+	FROM
+		parrafos_documentos2
+	WHERE
+		documento = 25 AND
+		abg_ben = 1 AND
+		cantidad = '" . $cantidad . "' AND
+		genero = '" . $genero . "'";
+	sc_lookup(rs, $check_sql19);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$pysha = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$pysha = '';
+	}
+//fin select campos estaticos 2 paz y salvo honorarios
+
+//resultado select campos estaticos 2 paz y salvo honorarios
+	sc_lookup(dataset19, $check_sql19);
+		for ($a = 0; $a < 1; $a++){
+			$pysha	= {dataset19[$a][0]};
+		}
+//fin resultado select campos estaticos 2 paz y salvo honorarios
+	
+	$pysha1 = {dataset19[0][0]};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+//select parrafo sentencia o conciliacion
+	$check_sql20 = "SELECT
+		parrafo
+	FROM
+		`parrafos_sent_conc`
+	WHERE
+		tipo_sentencia = '" . {tipo_sentencia} . "'";;
+	sc_lookup(rs, $check_sql20);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$sent_conc = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$sent_conc = '';
+	}
+
+//resultado select campos estaticos 2 paz y salvo honorarios
+	sc_lookup(dataset20, $check_sql20);
+		for ($a = 0; $a < 2; $a++){
+			$sent_conc	= {dataset20[$a][0]};
+		}
+//fin resultado select campos estaticos 2 paz y salvo honorarios
+
+	$sent_conc1 = {dataset20[0][0]};
+	$sent_conc2 = {dataset20[1][0]};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+//repositorio primera instancia
+	$check_sql21 = "SELECT
+		fecha_emitido,
+		`check`
+	FROM
+		repositorio
+	WHERE
+		documento_clase = 10 AND 
+		codReg 			= '" . {cod} . "'
+	ORDER BY `check` DESC";
+	sc_lookup(rs21, $check_sql21);
+
+	if (isset({rs21[0][0]}))     // Row found
+	{
+		$rep_emitido3 = {rs21[0][0]};
+		$check_pi	  = {rs21[0][1]};
+	}
+			else     // No row found
+	{
+		$rep_emitido3 = '';
+		$check_pi	  = '';
+	}
+// fin repositorio primera instancia
+
+//count primera instancia
+	$check_sql22 = "SELECT
+			COUNT(codigo)
+		FROM
+			repositorio
+		WHERE
+			documento_clase = 10 AND 
+			codReg =  '" . {cod} . "'";
+	sc_lookup(rs22, $check_sql22);
+
+	if (isset({rs22[0][0]}))     // Row found
+	{
+		$count_pi = {rs22[0][0]};
+	}
+			else     // No row found
+	{
+		$count_pi = '';
+	}
+//fin count primera instancia
+
+//lista primera instancia
+
+	//si el campo esta en blanco
+	if($rep_emitido3 < 1){
+		{rs21[0][1]} = 2;
+	}else{
+		$check_pi = {rs21[0][1]};
+	}
+	//fin si el campo esta en blanco
+
+	sc_lookup(dataset21, $check_sql21);
+	for ($rep3  = 0; $rep3 < $count_pi; $rep3++){
+		$rep_emitido3 = {dataset21[$rep3][0]};
+		$check_pi 	  = {dataset21[$rep3][1]};
+
+		setlocale(LC_TIME, 'es_ES.UTF-8');
+		$pi_fecha = {dataset21[$rep3][0]};
+		$pi_dia_n = strftime('%d', strtotime($pi_fecha));
+		$pi_mes_t = strftime('%B', strtotime($pi_fecha));
+		$pi_ano_n = strftime('%Y', strtotime($pi_fecha));
+	}
+
+//fin lista primera instancia	
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//repositorio audiencia conciliacion
+	$check_sql23 = "SELECT
+		fecha_emitido,
+		`check`
+	FROM
+		repositorio
+	WHERE
+		documento_clase = 13 AND 
+		codReg 			= '" . {cod} . "'
+	ORDER BY `check` DESC";
+	sc_lookup(rs23, $check_sql23);
+
+	if (isset({rs23[0][0]}))     // Row found
+	{
+		$rep_emitido = {rs23[0][0]};
+		$check_ac	 = {rs23[0][1]};
+	}
+			else     // No row found
+	{
+		$rep_emitido = 0;
+		$check_ac	 = '';
+	}
+// fin repositorio audiencia conciliacion
+
+//count audiencia conciliacion
+	$check_sql24 = "SELECT
+			COUNT(codigo)
+		FROM
+			repositorio
+		WHERE
+			documento_clase = 13 AND 
+			codReg =  '" . {cod} . "'";
+	sc_lookup(rs, $check_sql24);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$count_ac = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$count_ac = '';
+	}
+//fin count audiencia conciliacion
+
+	//cuando el campo esta en blanco
+	if($rep_emitido < 1){
+		{rs23[0][1]} = 2;
+	}else{
+		$check_ac = {rs23[0][1]};
+	}
+	//fin cuando el campo esta en blanco
+
+//lista conciliacion
+	sc_lookup(dataset23, $check_sql23);
+	for ($rep  = 0; $rep < $count_ac; $rep++){
+		$rep_emitido = {dataset23[$rep][0]};
+		$check_ac 	 = {dataset23[$rep][1]};
+
+		//conciliacion
+		setlocale(LC_TIME, 'es_ES.UTF-8');
+		$ac_fecha = {dataset23[$rep][0]};
+		$ac_dia_n = strftime('%d', strtotime($ac_fecha));
+		$ac_mes_t = strftime('%B', strtotime($ac_fecha));
+		$ac_ano_n = strftime('%Y', strtotime($ac_fecha));
+		//fin conciliacion	
+	}	
+//fin lista conciliacion
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	$resultado = "";
+	$resultado_ac = "";
+
+	switch(true){		
+		case ({tipo_sentencia} == 1):
+			
+			switch(true){
+			case ($check_pi == 2):
+				$resultado = "<strong> No tiene fecha el documento: 'primera instancia' habilitado con check</strong>";
+				echo $resultado . "<br>";
+			break;
+			case ($check_pi == 0):
+				$resultado = "<strong> No tiene registrado el documento: primera instancia</strong>";
+				echo $resultado . "<br>";
+			break;
+			case ($check_pi == 1):
+				
+				$diat = convertidor($pi_dia_n);
+				$dian = "(".$pi_dia_n.")";
+				$mest = $pi_mes_t;
+				$anot = convertidor($pi_ano_n);
+				$anon = "(".$pi_ano_n."),";
+
+				$diat1 = convertidor($ac_dia_n);
+				$dian1 = "(".$ac_dia_n.")";
+				$mest1 = $ac_mes_t;
+				$anot1 = convertidor($ac_dia_n);
+				$anon1 = "(".$ac_ano_n."),";
+				
+				$resultado 	  = $dia . " " . $diat. " " . $dian . " " .$mes . " " . $mest . " " . $ano . " " . $anot . " " . $anon;
+				$resultado_ac = $dia . " " . $diat1. " " . $dian1 . " " .$mes . " " . $mest1 . " " . $ano . " " . $anot1 . " " . $anon1;
+			break;
+			}
+			
+		break;
+
+		//conciliacion
+		case({tipo_sentencia} == 2):
+
+			switch(true){
+			case ($check_ac == 2):
+				$resultado = "<strong> No tiene fecha el documento: 'audiencia conciliación' habilitado con check</strong>";
+				echo $resultado . "<br>";
+			break;
+			case ($check_ac == 0):
+				$resultado = "<strong> No tiene registrado el documento: audiencia conciliacion</strong>";
+				echo $resultado . "<br>";
+			break;
+			case ($check_ac == 1):
+					
+				$diat1 = convertidor($ac_dia_n);
+				$dian1 = "(".$ac_dia_n.")";
+				$mest1 = $ac_mes_t;
+				$anot1 = convertidor($ac_dia_n);
+				$anon1 = "(".$ac_ano_n."),";
+					
+				$resultado = $dia . " " . $diat1. " " . $dian1 . " " .$mes . " " . $mest1 . " " . $ano . " " . $anot1 . " " . $anon1;
+				$resultado_ac = $dia . " " . $diat1. " " . $dian1 . " " .$mes . " " . $mest1 . " " . $ano . " " . $anot1 . " " . $anon1;
+			break;		
+			}
+		break;	
+	}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//repositorio auto que aprueba
+	$check_sql25 = "SELECT
+		fecha_emitido,
+		`check`
+	FROM
+		repositorio
+	WHERE
+		documento_clase = 14 AND 
+		codReg 			= '" . {cod} . "'
+	ORDER BY `check` DESC";
+	sc_lookup(rs25, $check_sql25);
+
+	if (isset({rs25[0][0]}))     // Row found
+	{
+		$rep_emitido1 = {rs25[0][0]};
+		$check_aa	 = {rs25[0][1]};
+	}
+			else     // No row found
+	{
+		$rep_emitido1 = '';
+		$check_aa	 = '';
+	}
+// fin repositorio audiencia conciliacion
+
+//count auto que aprueba
+	$check_sql26 = "SELECT
+			COUNT(codigo)
+		FROM
+			repositorio
+		WHERE
+			documento_clase = 14 AND 
+			codReg =  '" . {cod} . "'";
+	sc_lookup(rs, $check_sql26);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$count_aa = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$count_aa = '';
+	}
+//fin count auto que aprueba
+
+//lista auto que aprueba
+
+	if($rep_emitido1 < 1){
+		{rs25[0][1]} = 2;
+	}else{
+		$check_aa = {rs25[0][1]};
+	}
+
+	sc_lookup(dataset25, $check_sql25);
+	for ($rep1  = 0; $rep1 < $count_aa; $rep1++){
+		$rep_emitido1 = {dataset25[$rep1][0]};
+		$check_aa 	 = {dataset25[$rep1][1]};
+
+		//conciliacion
+		setlocale(LC_TIME, 'es_ES.UTF-8');
+		$aa_fecha = {dataset25[$rep1][0]};
+		$aa_dia_n = strftime('%d', strtotime($aa_fecha));
+		$aa_mes_t = strftime('%B', strtotime($aa_fecha));
+		$aa_ano_n = strftime('%Y', strtotime($aa_fecha));
+		//fin conciliacion	
+	}	
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//segunda instancia
+
+//repositorio segunda instancia
+	$check_sql27 = "SELECT
+		fecha_emitido,
+		`check`
+	FROM
+		repositorio
+	WHERE
+		documento_clase = 11 AND 
+		codReg 			= '" . {cod} . "'
+	ORDER BY `check` DESC";
+	sc_lookup(rs27, $check_sql27);
+
+	if (isset({rs27[0][0]}))     // Row found
+	{
+		$rep_emitido4 = {rs27[0][0]};
+		$check_si	  = {rs27[0][1]};
+	}
+			else     // No row found
+	{
+		$rep_emitido4 = '';
+		$check_si	  = '';
+	}
+// fin repositorio segunda instancia
+
+//count segunda instancia
+	$check_sql28 = "SELECT
+			COUNT(codigo)
+		FROM
+			repositorio
+		WHERE
+			documento_clase = 11 AND 
+			codReg =  '" . {cod} . "'";
+	sc_lookup(rs, $check_sql28);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$count_si = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$count_si = '';
+	}
+//fin count segunda instancia
+
+//lista segunda instancia
+
+	if($rep_emitido4 < 1){
+		{rs27[0][1]} = 2;
+	}else{
+		$check_si = {rs27[0][1]};
+	}
+
+	sc_lookup(dataset27, $check_sql27);
+	for ($rep4  = 0; $rep4 < $count_si; $rep4++){
+		$rep_emitido4 = {dataset27[$rep4][0]};
+		$check_si 	  = {dataset27[$rep4][1]};
+		
+		setlocale(LC_TIME, 'es_ES.UTF-8');
+		$si_fecha = {dataset27[$rep4][0]};
+		$si_dia_n = strftime('%d', strtotime($si_fecha));
+		$si_mes_t = strftime('%B', strtotime($si_fecha));
+		$si_ano_n = strftime('%Y', strtotime($si_fecha));
+	}
+
+//fin primera instancia	
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//resultado opcional 2
+	$resultado1 = "";
+	
+	switch(true){
+	//sentencia
+	case({tipo_sentencia} == 1):
+		
+		switch(true){
+		case ($check_si == 2):
+			$resultado1 = "<strong> No tiene fecha el documento: 'segunda instancia' habilitado con check</strong>";
+			echo $resultado1 . "<br>";
+		break;
+		case ($check_si == 0):
+			$resultado1 = "<strong> No tiene registrado el documento: segunda instancia</strong>";
+			echo $resultado1 . "<br>";
+		break;
+		case ($check_si == 1):
+				
+			$diat2 = convertidor($si_dia_n);
+			$dian2 = "(".$si_dia_n.")";
+			$mest2 = $si_mes_t;
+			$anot2 = convertidor($si_ano_n);
+			$anon2 = "(".$si_ano_n."),";
+				
+			$resultado1 = " " . $diat2. " " . $dian2 . " " .$mes . " " . $mest2 . " " . $ano . " " . $anot2 . " " . $anon2;
+		break;		
+		}
+	break;
+	//conciliacion
+	case({tipo_sentencia} == 2):
+		
+		switch(true){
+		case ($check_aa == 2):
+			$resultado1 = "<strong> No tiene fecha el documento: 'auto que aprueba' habilitado con check</strong>";
+			echo $resultado1 . "<br>";
+		break;
+		case ($check_aa == 0):
+			$resultado1 = "<strong> No tiene registrado el documento: auto que aprueba</strong>";
+			echo $resultado1 . "<br>";
+		break;
+		case ($check_aa == 1):
+			
+			$diat3 = convertidor($aa_dia_n);
+			$dian3 = "(".$aa_dia_n.")";
+			$mest3 = $aa_mes_t;
+			$anot3 = convertidor($aa_ano_n);
+			$anon3 = "(".$aa_ano_n."),";
+				
+			$resultado1 = " " . $diat3. " " . $dian3 . " " .$mes . " " . $mest3 . " " . $ano . " " . $anot3 . " " . $anon3;
+		break;		
+		}
+	break;	
+	}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//repositorio paz y salvo honorarios
+	$check_sql29 = "SELECT
+		fecha_emitido,
+		`check`
+	FROM
+		repositorio
+	WHERE
+		documento_clase = 25 AND 
+		codReg 			= '" . {cod} . "'
+	ORDER BY `check` DESC";
+	sc_lookup(rs29, $check_sql29);
+
+	if (isset({rs29[0][0]}))     // Row found
+	{
+		$rep_emitido6 = {rs29[0][0]};
+		$check_pyzh	  = {rs29[0][1]};
+	}
+			else     // No row found
+	{
+		$rep_emitido6 = '';
+		$check_pyzh	  = '';
+	}
+// fin repositorio paz y salvo honorarios
+
+//count paz y salvo honorarios
+	$check_sql30 = "SELECT
+			COUNT(codigo)
+		FROM
+			repositorio
+		WHERE
+			documento_clase = 25 AND 
+			codReg =  '" . {cod} . "'";
+	sc_lookup(rs, $check_sql30);
+
+	if (isset({rs[0][0]}))     // Row found
+	{
+		$count_pyzh = {rs[0][0]};
+	}
+			else     // No row found
+	{
+		$count_pyzh = '';
+	}
+//fin count paz y salvo honorarios
+
+//lista paz y salvo honorarios
+
+	if($rep_emitido6 < 1){
+		{rs29[0][1]} = 2;
+	}else{
+		$check_pyzh = {rs29[0][1]};
+	}
+
+	sc_lookup(dataset29, $check_sql29);
+	for ($rep6  = 0; $rep6 < $count_pyzh; $rep6++){
+		$rep_emitido6 = {dataset29[$rep6][0]};
+		$check_pyzh	  = {dataset29[$rep6][1]};
+		//echo "tipo sentencia:".{tipo_sentencia} .", clase:". {dataset[$rep4][0]} . ", check = " . {dataset[$rep4][1]} . "<br>";
+		
+		setlocale(LC_TIME, 'es_ES.UTF-8');
+		$pyzh_fecha = {dataset29[$rep6][0]};
+		$pyzh_dia_n = strftime('%d', strtotime($pyzh_fecha));
+		$pyzh_mes_t = strftime('%B', strtotime($pyzh_fecha));
+		$pyzh_ano_n = strftime('%Y', strtotime($pyzh_fecha));
+		
+	}
+
+//fin paz y salvo honorarios	
+
+//resultados opcionales paz y salvo honorarios
+
+	switch(true){
+		case ($check_pyzh == 2):
+			$resultado2 = "<strong> No tiene fecha el documento: 'paz y salvo honorarios' habilitado con check</strong>";
+			echo $resultado2 . "<br>";
+		break;
+		case ($check_pyzh == 0):
+			$resultado2 = "<strong> No tiene registrado el documento: paz y salvo honorarios</strong>";
+			echo $resultado2 . "<br>";
+		break;
+		case ($check_pyzh == 1):
+			
+			$diat4 = convertidor($pyzh_dia_n);
+			$dian4 = "(".$pyzh_dia_n.")";
+			$mest4 = $pyzh_mes_t;
+			$anot4 = convertidor($pyzh_ano_n);
+			$anon4 = "(".$pyzh_ano_n."),";
+
+			$resultado2 = $dia . " " . $diat4. " " . $dian4 . " " .$mes . " " . $mest4 . " " . $ano . " " . $anot4 . " " . $anon4;
+		break;		
+	}
+
+//fin resultados opcionales paz y salvo honorarios
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//dias y años en texto
+
+	function unidades($numero) {
+		$valor = array ('uno','dos','tres','cuatro','cinco','seis','siete','ocho',
+						'nueve','diez', 'once', 'doce', 'trece', 'catorce', 'quince', 
+						'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte', 
+						'veintiuno', 'veintidos', 'veintitres', 'veinticuatro','veinticinco',
+						'veintiséis','veintisiete','veintiocho','veintinueve');
+		return $valor[$numero - 1];
+	}
+
+	function decenas($n) {
+		$decenas = array (30=>'treinta',
+						  40=>'cuarenta',
+						  50=>'cincuenta',
+						  60=>'sesenta',
+						  70=>'setenta',
+						  80=>'ochenta',
+						  90=>'noventa');
+		
+		if( $n <= 29) 
+			return unidades($n);
+		
+		$a = $n % 10;
+		if ($a == 0){
+			return $decenas[$n];
+		}else 
+			return $decenas[$n - $a].' y '. unidades($a);
+	}
+
+	function centenas($n) {
+		$cientos = array (100=>'cien',
+						  200=>'doscientos',
+						  300=>'trecientos',
+						  400=>'cuatrocientos', 
+						  500=>'quinientos',
+						  600=>'seiscientos',
+						  700=>'setecientos',
+						  800=>'ochocientos', 
+						  900=>'novecientos');
+		if( $n >= 100) {
+			if ($n % 100 == 0){
+				return $cientos[$n];
+			}else{
+				$u = (int) substr($n,0,1);
+				$d = (int) substr($n,1,2);
+				return (($u == 1)? 'ciento':$cientos[$u*100]).' ' . decenas($d);
+			}
+		}else 
+			return decenas($n);
+	}
+
+	function miles($n) {
+		if($n > 999){
+			if($n == 1000){
+				return 'mil';
+			}else{
+				$l = strlen($n);
+				$c = (int)substr($n,0,$l-3);
+				$m = (int)substr($n,-3);
+				
+				if($c == 1){
+					$cadena = 'mil '. centenas($m);
+				}else if($m != 0){
+					$cadena = centenas($c) . ' mil ' .centenas($m);
+				}else 
+					$cadena = centenas($c). ' mil';
+					return $cadena;
+			}
+		}else 
+			return centenas($n);
+	}
+
+	function convertidor($n) {
+		switch(true){
+			case ($n >= 1 && $n <= 29): 
+				return unidades($n); 
+			break;
+			case ($n >= 30 && $n < 100): 
+				return decenas($n); 
+			break;
+			case ($n >= 100 && $n < 1000): 
+				return centenas($n); 
+			break;
+			case ($n >= 1000 && $n <= 999999): 
+				return miles($n); 
+			break;
+		}
+	}
+
+// fin dias y años en texto
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Desarchivo/////////////////////////////////////////////////////////////////////////////
+	$desarc = $a1 . " " . $desarchivo1 . " " . $c1 . " " . $desarchivo2 . " " . $t1 . " " . $desarchivo3;
+//fin desarchivo/////////////////////////////////////////////////////////////////////////
+
+//revisar////////////////////////////////////////////////////////////////////////////////
+	$revisar0 = $a1 . " " . $campo3gc1 . " " . $c1 . " " . $campo3gc2 . " " . $t1 . " " . $campo3gc3 . " " . $revisar1;
+//fin revisar////////////////////////////////////////////////////////////////////////////
+
+//paz y salvo honorarios/////////////////////////////////////////////////////////////////
+	$pysh0 = $a1 . " " . $campo3gc1 . " " . $c1 . " " . $campo3gc2 . " " . $t1 . " " . $campo3gc3 . " " . $pysh1 . " " . $b1 
+		. " " . $pyshb1 . $manifiesto . " " . $pyshb2 . " " . $pysha1 . " " . $sent_conc1 . " " . $j1 . " " . $resultado . 
+		$sent_conc2 . $resultado1 . $celebrado_ac . $resultado_ac . " " . $celebrado_ac1 . $j1 . " " . $resultado2 .
+		$identificada . " " . {noSentencia} . " " . $cuyo_actor . " " . {actor} . $reparacion_d . " ";
+//fin paz y salvo honorarios/////////////////////////////////////////////////////////////

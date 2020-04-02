@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Poder DIAN tipo 1</title>
+    <style>
+      body{
+        text-align: justify;
+        margin: auto;
+        width: 70%;
+      }
+      .seccion{
+        display:flex;
+        justify-content: space-around;
+      }
+      .seccion2{
+        display:flex;
+        justify-content: space-between;
+      }
+      .cuerpo{
+        padding: 40px;
+        background-color: white;  
+        border: 0;
+        text-align: justify;
+      }
+
+      div .titulo {
+        text-align: center;
+      }
+
+      .t_centrado {
+        text-align: center;
+      }
+      .salto_de_pagina{
+        page-break-after: always;
+      }      
+
+      @media print{
+        div.saltopagina{
+          display:block;
+          page-break-before:always;
+        }
+      } 
+    </style>
+  </head>
+  <body style="padding: 5rem 3rem;  ">
+
+    <section class="desarchivo">
+      <div class="cuerpo">
+        <p style="text-align:left">SOLICITUD DE DESARCHIVO: {actor} Y OTROS VS NACIÓN - {entidad_condenada}<br>
+          RAD. {noSentencia}
+        </p>
+        <br>
+        <p>$senores<br>
+          <strong>$j1</strong><br>
+        </p>
+        <br><br><br>
+        <table style="height: 26px;" width="642px">
+          <tbody>
+            <tr>
+              <td style="text-align:left">
+                $asunto</td><td><strong> DESARCHIVO DEL PROCESO</strong>
+              </td>
+            </tr>
+            <tr>
+              <td>$radicado</td><td>{noSentencia}</td>
+            </tr>
+            <tr>
+              <td>$demandante</td><td>{actor} Y OTROS</td>
+            </tr>
+            <tr>
+              <td>$demandado:</td><td>{entidad_condenada}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="text-align:justify">
+          <span style="text-align:justify">
+            <br><br><br><br>
+            <p>
+             $desarc
+            <div>
+              
+              <div class="seccion">
+                $g2_1
+              </div>
+            </div>
+          </span>
+        </p>
+      </div>
+    </section>
+    <p class='salto_de_pagina'></p><br><br><br>
+    
+    <section class="revisar">
+      <div class="cuerpo">
+        <p style="text-align:left">PODER PARA REVISAR: {actor} Y OTROS VS NACIÓN - {entidad_condenada}<br>
+          RAD. {noSentencia}
+        </p>
+        <br>
+        <p><strong>$senores</strong><br>
+          <strong>$j1</strong><br>
+          <strong>{entidad_condenada}</strong><br></p>
+        
+        <table style="height: 26px;" width="642px">
+          <tbody>
+            <tr>
+              <td style="text-align:left">
+                $asunto</td><td><strong> AUTORIZACI&Oacute;N PARA REVISI&Oacute;N DE PROCESOS</strong>
+              </td>
+            </tr>
+            <tr>
+              <td>$referencia</td><td><strong>Acci&oacute;n de reparaci&oacute;n directa.</strong></td>
+            </tr>
+            <tr>
+              <td>$radicado</td><td>{noSentencia}</td>
+            </tr>
+            <tr>
+              <td>$demandante</td><td>{actor} Y OTROS</td>
+            </tr>
+            <tr>
+              <td>$demandado</td><td>{entidad_condenada}</td>
+            </tr>
+          </tbody>
+        </table>
+        <br><br><br>
+        <p style="text-align:justify">
+          <span style="text-align:justify">
+            $revisar0
+          </span></p>
+        <div>
+          <div class="seccion">
+            $g2_1
+          </div>
+        </div>
+      </div>
+    </section>
+    <p class='salto_de_pagina'><br><br><br></p>
+    
+    <section class="paz_y_salvo_h">
+      <div class="cuerpo">
+        <p style="text-align:left">PAZ Y SALVO POR HONORARIOS: {actor} Y OTROS VS NACIÓN - {entidad_condenada}<br>
+          RAD. {noSentencia}
+        </p>
+        <br>
+        <p style="text-align:center"><strong>PAZ Y SALVO POR HONORARIOS</strong></p>
+        <p style="text-align:justify">
+          <span style="text-align:justify">
+            $pysh0 {entidad_condenada} $atentamente
+          </span>
+        </p>  
+        <div class="seccion">
+          <div class="seccion">
+            $g2_2
+          </div>
+        </div>
+
+      </div>
+    </section>
+    <p class='salto_de_pagina'></p><br><br><br>
+    
+  </body>
+</html>
